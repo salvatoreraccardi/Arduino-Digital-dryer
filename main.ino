@@ -1,8 +1,10 @@
-//****Lista librerie****
+#include <Adafruit_Sensor.h>
 #include <LiquidCrystal.h>
-#include <dht11.h>
-dht11 DHT;
+#include "DHT.h"
 #define DHT11_PIN 8
+#define DHTTYPE DHT11
+DHT dht(DHT11_PIN, DHTTYPE);
+
 #define val_status "Stand by"
 //****Display Settings****
 LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
@@ -121,9 +123,8 @@ byte fan_reverse[8] = {
 //****START auto-update****
 //Funzione di auto-update della temperatura e umidita
 void update_val(){
-  int chk = DHT.read(DHT11_PIN); //Leggo i valori del DHT11
-  t= DHT.temperature; //Leggo la temperatura
-  h= DHT.humidity; //Leggo l'umidità
+  t= dht.readTemperature(); //Leggo la temperatura
+  h= dht.readHumidity(); //Leggo l'umidità
   Serial.println(t);
   Serial.println(h);
 }
@@ -422,6 +423,7 @@ void setup() {
   digitalWrite(vent,LOW);
   digitalWrite(lamp,LOW);
   lcd.begin(16, 2);  
+  dht.begin();
   //DICHIARO I SIMBOLI PERSONALIZZATI DEL DISPLAY LCD
   //ALCUNI SIMBOLO HANNO DUE FRAME, HANNO LA FUNZIONE DI ANIMARE IL SIMBOLO
   lcd.createChar(0, gradi);  //Simbolo per la temperatura
